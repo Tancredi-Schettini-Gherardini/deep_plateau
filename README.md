@@ -1,7 +1,7 @@
 # deep_plateau
 
 > Companion code for the paper **"&lt;TODO: paper title&gt;"** ([arXiv:2605.xxxx](https://arxiv.org/abs/2605.xxxx))
-> by &lt;TODO: full author list&gt;.
+> by Tancredi Schettini Gherardini and Marco Usula.
 
 Physics-informed neural networks (PINNs) for the **asymptotic Plateau problem in hyperbolic space**.
 Given a Jordan curve $\gamma \subset \partial_\infty \mathbb{H}^3 \cong S^2$ or a knot
@@ -124,7 +124,7 @@ If you use this code, please cite the paper:
 ```bibtex
 @article{<TODO: bibkey>,
   title         = {<TODO: paper title>},
-  author        = {Schettini Gherardini, Tancredi and <TODO: co-authors>},
+  author        = {Schettini Gherardini, Tancredi and Usula, Marco},
   year          = {2026},
   eprint        = {2605.xxxx},
   archivePrefix = {arXiv},

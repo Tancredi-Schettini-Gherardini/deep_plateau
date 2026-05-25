@@ -6,7 +6,10 @@ authors:
   - family-names: "Schettini Gherardini"
     given-names: "Tancredi"
     email: "tsg@math.uni-bonn.de"
-    # TODO: add ORCID + affiliation once available, and any co-authors of the paper.
+  - family-names: "Usula"
+    given-names: "Marco"
+    email: "marco.usula@maths.ox.ac.uk"
+    # TODO: add affiliation for both authors once available.
 repository-code: "https://github.com/Tancredi-Schettini-Gherardini/deep_plateau"
 license: MIT
 keywords:
@@ -23,6 +26,7 @@ preferred-citation:
   authors:
     - family-names: "Schettini Gherardini"
       given-names: "Tancredi"
-    # TODO: add co-authors.
+    - family-names: "Usula"
+      given-names: "Marco"
   year: 2026
   url: "https://arxiv.org/abs/2605.xxxx"
