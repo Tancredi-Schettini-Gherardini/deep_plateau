@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, or the paper it accompanies, please cite both as below."
+title: "deep_plateau: PINN-based minimal surfaces in hyperbolic space"
+type: software
+authors:
+  - family-names: "Schettini Gherardini"
+    given-names: "Tancredi"
+    email: "tsg@math.uni-bonn.de"
+    # TODO: add ORCID + affiliation once available, and any co-authors of the paper.
+repository-code: "https://github.com/Tancredi-Schettini-Gherardini/deep_plateau"
+license: MIT
+keywords:
+  - "Plateau problem"
+  - "minimal surfaces"
+  - "hyperbolic geometry"
+  - "physics-informed neural networks"
+  - "PINN"
+  - "knots"
+  - "double points"
+preferred-citation:
+  type: article
+  title: "<TODO: paper title>"
+  authors:
+    - family-names: "Schettini Gherardini"
+      given-names: "Tancredi"
+    # TODO: add co-authors.
+  year: 2026
+  url: "https://arxiv.org/abs/2605.xxxx"

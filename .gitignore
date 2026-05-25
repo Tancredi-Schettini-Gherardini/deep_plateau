@@ -1,1 +1,8 @@
 .venv/
+
+# macOS / IDE noise
+.DS_Store
+
+# Python build artefacts
+__pycache__/
+*.pyc
