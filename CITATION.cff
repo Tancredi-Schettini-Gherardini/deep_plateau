@@ -6,10 +6,11 @@ authors:
   - family-names: "Schettini Gherardini"
     given-names: "Tancredi"
     email: "tsg@math.uni-bonn.de"
+    affiliation: "University of Bonn and Max Planck Institute for Mathematics"
   - family-names: "Usula"
     given-names: "Marco"
     email: "marco.usula@maths.ox.ac.uk"
-    # TODO: add affiliation for both authors once available.
+    affiliation: "University of Oxford"
 repository-code: "https://github.com/Tancredi-Schettini-Gherardini/deep_plateau"
 license: MIT
 keywords:
