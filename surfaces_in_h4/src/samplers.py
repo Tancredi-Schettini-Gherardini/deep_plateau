@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-# ------------------------------------------------------------------------------------
+# Collocation-point sampler for the unit disc
 class MixSampler(nn.Module):
     def __init__(self, bias = 0.5, mix=1, target=(0,0), sigma=0.2, dtype=torch.float64, device='cpu'):
         super().__init__()
@@ -41,7 +41,7 @@ class MixSampler(nn.Module):
         n_background = int(N * self.mix)
         n_gauss = N - n_background
 
-        # Truncated Gaussian around p
+        # Truncated Gaussian around the target, rejection-sampled into the disc
         if n_gauss > 0:
             gauss_samples = []
             while len(gauss_samples) < n_gauss:

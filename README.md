@@ -1,6 +1,6 @@
 # deep_plateau
 
-> Companion code for the paper **"&lt;TODO: paper title&gt;"** ([arXiv:2605.xxxx](https://arxiv.org/abs/2605.xxxx))
+> Companion code for the paper **"Minimal Surfaces, Knots, and Neural Networks"** ([arXiv:2605.xxxx](https://arxiv.org/abs/2605.xxxx))
 > by Tancredi Schettini Gherardini and Marco Usula.
 
 Physics-informed neural networks (PINNs) for the **asymptotic Plateau problem in hyperbolic space**.
@@ -123,7 +123,7 @@ If you use this code, please cite the paper:
 
 ```bibtex
 @article{<TODO: bibkey>,
-  title         = {<TODO: paper title>},
+  title         = {Minimal Surfaces, Knots, and Neural Networks},
   author        = {Schettini Gherardini, Tancredi and Usula, Marco},
   year          = {2026},
   eprint        = {2605.xxxx},
@@ -142,3 +142,5 @@ Released under the **MIT License** — see [`LICENSE`](LICENSE).
 ## Contact
 
 Tancredi Schettini Gherardini — &lt;tsg@math.uni-bonn.de&gt;
+
+Marco Usula — &lt;marco.usula@maths.ox.ac.uk&gt;

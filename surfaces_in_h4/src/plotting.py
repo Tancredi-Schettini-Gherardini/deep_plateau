@@ -15,18 +15,17 @@ def plot_knot(
         zlim=(-2, 2),
         block=True,):
     
-    # 1. Create theta directly in PyTorch on the correct device.
-    # We use .view(-1, 1) to ensure it has the required (N, 1) shape.
+    # Sample theta on [0, 2*pi] as an (N, 1) column for the evaluator.
     theta = torch.linspace(0, 2*np.pi, n_points, device=device, dtype=dtype).view(-1, 1)
     
-    # 2. Evaluate using torch.no_grad()
+    # Evaluate the knot without tracking gradients.
     with torch.no_grad():
-        # Evaluate, detach any gradients just in case, move to CPU, convert to numpy
+        # Move to CPU and convert to NumPy for plotting.
         curve = evaluator(theta).cpu().numpy()
         
     x, y, z = curve[:, 0], curve[:, 1], curve[:, 2]
 
-    # 3. Plot (Standard Matplotlib logic remains unchanged)
+    # Plot the curve in 3D.
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.plot(x, y, z)
@@ -79,7 +78,7 @@ def plot_error(
     errors = []
     
     for i in range(0, points.shape[0], batch_size):
-        # Because we use torch.func, we DO NOT need requires_grad=True anymore!
+        # No requires_grad needed: the PDE evaluator differentiates analytically.
         batch_pts = points[i:i+batch_size]
         
         # Evaluate PDE directly (the model evaluation is baked into this call)
@@ -124,7 +123,7 @@ def plot_error(
             linewidth=boundary_linewidth
         ))
 
-    # Add Colorbar (only if a label is provided or explicitly requested)
+    # Add a colorbar only when a label is provided.
     if colorbar_label is not None:
         plt.colorbar(im, label=colorbar_label)
 
@@ -171,7 +170,7 @@ def montecarlo_error(
 ):
     errors = []
     k = 1
-    # Assuming MixSampler is defined elsewhere in your code
+    # Build the disc sampler for the Monte Carlo draws.
     sampler = MixSampler(mix=mix, bias=bias)
     for i in range(num_samples):
         if i == int(k/10 * num_samples)-1:
@@ -254,7 +253,7 @@ def montecarlo_error(
 def plot_mu_heatmap_log(
     u_callable, epsilon,
     candidates=None, refined_pairs=None, jacobians=None,
-    ax=None,  # <--- NEW PARAMETER
+    ax=None,  # optional Axes to draw into (e.g. for subplots)
     # --- Titles & Text Labels ---
     title='default', 
     colorbar_label=r'$\log_{10}(\mu_{\varepsilon}(p))$',

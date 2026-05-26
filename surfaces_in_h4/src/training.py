@@ -23,7 +23,7 @@ def train_PINN_Adam(
     # Pre-load the entire grid into RAM to bypass DataLoader bottlenecks
     xy_grid = xy_grid.to(device=device, dtype=dtype)
 
-    # 1. Compile the super-fast flat module
+    # 1. Build the compiled PDE-residual evaluator
     fast_pde = minimal_in_H4_PDE_flat_new(
         model, 
         use_compile=True, 
@@ -73,7 +73,7 @@ def train_PINN_Adam(
             
             optimizer.zero_grad()
             
-            # Blast the batch through the compiled C++ kernel
+            # Evaluate the PDE residual on the batch
             residual = fast_pde(batch_xy)
             
             # Mean Squared Error
@@ -95,7 +95,7 @@ def train_PINN_Adam(
 
         if avg_epoch_loss < best_loss:
             best_loss = avg_epoch_loss
-            # CPU cloning is extremely fast, so we can save the best state in memory
+            # Snapshot the best weights seen so far
             best_model_state = {k: v.clone() for k, v in model.state_dict().items()}
 
         if verbose and ep % 10 == 0:
@@ -116,20 +116,19 @@ def refine_PINN_lbfgs(
         lr=1.0,
         max_iter=300,
         log_every=10,
-        tolerance_grad=1e-12,     # Imported from Snippet 2
-        tolerance_change=1e-14    # Imported from Snippet 2
+        tolerance_grad=1e-12,     # L-BFGS gradient-norm stopping tolerance
+        tolerance_change=1e-14    # L-BFGS loss-change stopping tolerance
     ):
     device = torch.device("cpu")
     dtype = model.kwargs['dtype']
     model.to(device=device, dtype=dtype)
     
-    # FIX 1: Remove .requires_grad_(True)! 
-    # Your manual derivative engine already handles the spatial math.
+    # The input grid needs no requires_grad: the flat PDE module computes all
+    # spatial derivatives analytically (see mlp_uJH in geometry.py).
     xy_grid = xy_grid.to(device=device, dtype=dtype)
 
-    # FIX 2: Subsample the grid if it's too large for a single L-BFGS step.
-    # L-BFGS requires a static landscape, so we don't shuffle every step, 
-    # we just take a large, fixed random subset for the entire L-BFGS phase.
+    # L-BFGS needs a static objective, so the full grid is used unchanged for
+    # the entire refinement phase (no per-step reshuffling or resampling).
     fast_pde = minimal_in_H4_PDE_flat_new(
         model, 
         use_compile=True, 

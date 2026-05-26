@@ -19,7 +19,7 @@ def _maybe_compile(fn, use_compile: bool, compile_kwargs=None):
 
 
 # ===========================================================================
-# Math & Algebra Engine (Exact math from original, eps removed)
+# Tension-field PDE residual from the embedding value, Jacobian, and Hessian
 # ===========================================================================
 def _v4_algebra(u, J, H):
     N = u.shape[0]
@@ -314,13 +314,13 @@ def _stereobiharmonic_ext_uJH_with_coeffs(xy, A0, An, Bn):
 
 
 # ===========================================================================
-# The Flat Module (Wired to your HyperbolicMinimalSurfacePINN)
+# The Flat Module (Wired to a HyperbolicMinimalSurfacePINN)
 # ===========================================================================
 class FlatStereoPDEModel(torch.nn.Module):
     def __init__(self, host_model):
         super().__init__()
         
-        # Pull parameters directly from your HyperbolicMinimalSurfacePINN structure
+        # Extract the MLP and decay exponent from the host model
         self.mlp = host_model.NN.net
         self.p = int(host_model.decay_exponent)
 
@@ -349,7 +349,7 @@ class FlatStereoPDEModel(torch.nn.Module):
         # 4. Product-rule combine
         u, J, H = _combine_product_rule(mlp_u, mlp_J, mlp_H, rho, rho_J, rho_H, ext_u, ext_J, ext_H, self.p)
 
-        # 5. Raw algebra execution (eps removed)
+        # 5. Evaluate the PDE residual
         out = _v4_algebra(u, J, H)
         return out[0] if single else out
 

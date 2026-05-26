@@ -4,7 +4,7 @@ import torch
 class StereobiharmonicEvaluator(torch.nn.Module):
     """
     Pure PyTorch module that holds the Fourier coefficients and evaluates 
-    the stereobiharmonic extension. Highly optimized for torch.compile().
+    the stereobiharmonic extension.
     """
     def __init__(self, A0, An, Bn, N):
         super().__init__()
@@ -50,7 +50,7 @@ class StereobiharmonicEvaluator(torch.nn.Module):
 class Extension:
     def __init__(self, evaluator_module):
         """
-        Accepts the compiled nn.Module that takes `xy` and returns the stacked (N, 3) tensor.
+        Wraps an evaluator module mapping xy of shape (N, 2) to (N, 3).
         """
         self.evaluator_module = evaluator_module
         self.parametrized = True

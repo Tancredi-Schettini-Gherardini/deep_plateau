@@ -137,7 +137,7 @@ class Knot():
 
     def get_evaluator(self):
         """
-        Generates and compiles the forward pass of the knot.
+        Returns a KnotEvaluator for this knot's parametrization.
         """
         # 1. Create the evaluator module
         evaluator = KnotEvaluator(
@@ -147,7 +147,7 @@ class Knot():
             self.perturbation_matrix
         )
         
-        # # 2. Compile it for massive speedups
+        # 2. Return the evaluator
         return evaluator
     
 
@@ -169,7 +169,7 @@ def get_unknot(R=1.0):
     def base_z(th): 
         return R * torch.zeros_like(th)
 
-    # 2. Build the Knot configuration exactly as before
+    # 2. Build the Knot configuration
     unknot = Knot()
     unknot.make_parametrization(base_x, base_y, base_z)
     
@@ -273,8 +273,7 @@ def get_figure8(R=2.0, r=1.0):
 
 def get_figure8_torus(R=2.0, A=1.0, mirror=False):
     """
-    Returns a Figure-Eight knot using the Modulated Torus Parametrization 
-    based on the geometry in Knot.jpg. Ready for PyTorch compilation.
+    Returns a figure-eight knot via a modulated-torus parametrization.
     """
     # 1. Define base functions using 'def' and explicit float multipliers
     def base_x(th):
@@ -356,6 +355,7 @@ def get_stevedore_knot(R=1.0, mirror = False):
 
 
 def get_square_knot(R=1.0):
+    """Returns the square knot, parameterized as a Lissajous curve."""
     n_x = 3
     n_y = 5
     n_z = 7
@@ -387,6 +387,7 @@ def get_square_knot(R=1.0):
 
 
 def get_three_twist_knot(R=1.0, mirror = False):
+    """Returns the three-twist knot, parameterized as a Lissajous curve."""
     n_x = 3
     n_y = 2
     n_z = 7
@@ -434,6 +435,7 @@ def get_lissajous_knot(
     phi_y,
     phi_z,
     R=1.0):
+    """Returns a Lissajous knot with the given frequencies and phase shifts."""
 
     # 1. Define base functions using 'def' and explicit float multipliers
     def base_x(t): 

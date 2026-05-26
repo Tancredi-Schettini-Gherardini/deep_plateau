@@ -144,7 +144,7 @@ def refine_double_points_newton(u_callable, candidates, tol=1e-10, max_iter=50, 
         q_exact = x[2:]
         
         if converged:
-            # --- NEW: Check if inside the disc AND ||p - q|| > epsilon ---
+            # Keep only roots inside the disc with p and q sufficiently separated
             if (torch.norm(p_exact) <= 1.0 + disc_tol and 
                 torch.norm(q_exact) <= 1.0 + disc_tol and 
                 torch.norm(p_exact - q_exact) > epsilon):
