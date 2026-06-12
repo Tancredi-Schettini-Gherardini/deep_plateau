@@ -1,6 +1,6 @@
 # deep_plateau
 
-> Companion code for the paper **"Minimal Surfaces, Knots, and Neural Networks"** ([arXiv:2605.xxxx](https://arxiv.org/abs/2605.xxxx))
+> Companion code for the paper **"Minimal Surfaces, Knots, and Neural Networks"** ([arXiv:2605.26234v2](https://arxiv.org/abs/2605.26234v2))
 > by Tancredi Schettini Gherardini and Marco Usula.
 
 Physics-informed neural networks (PINNs) for the **asymptotic Plateau problem in hyperbolic space**.
@@ -122,11 +122,11 @@ above, evaluated on collocation points sampled inside $D^2$.
 If you use this code, please cite the paper:
 
 ```bibtex
-@article{to_be_updated,
+@article{gherardini2026minimalsurfacesknotsneural,
   title         = {Minimal Surfaces, Knots, and Neural Networks},
   author        = {Schettini Gherardini, Tancredi and Usula, Marco},
   year          = {2026},
-  eprint        = {2605.xxxx},
+  eprint        = {2605.26234},
   archivePrefix = {arXiv},
   primaryClass  = {math.DG}
 }
