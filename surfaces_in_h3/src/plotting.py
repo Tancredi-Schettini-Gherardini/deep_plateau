@@ -597,18 +597,55 @@ def plot_curve_and_projection(curve_obj, n_points=2000, r2_lim=(-5, 5)):
 
 def plot_H3_surfaces(
     model_A_trained, model_B_untrained,
+    # --- Grid A Parameters ---
     grid_size_A=500,
     min_r_A=0,
     max_r_A=1,
     min_theta_A=0,
     max_theta_A=2*np.pi,
     alpha_A=1,
+    # --- Grid B Parameters ---
     grid_size_B=500,
     min_r_B=0,
     max_r_B=1,
     min_theta_B=0,
     max_theta_B=2*np.pi,
-    alpha_B=1
+    alpha_B=1,
+    # --- Figure & Layout Parameters ---
+    figsize=(8, 14),
+    show_grid=True,
+    show_axis=True,
+    show_legend=True,
+    legend_loc='upper right',
+    elev=20,
+    azim=-45,
+    # --- Titles & Labels ---
+    title_ax1="Half-Space Model (x, y, z)",
+    title_ax2="Poincaré Ball Model (u, v, w)",
+    xlabel="",
+    ylabel="",
+    zlabel="",
+    # --- Model A Aesthetics ---
+    cmap_A='coolwarm',
+    edgecolor_A='none',
+    label_A='Model A (Trained)',
+    # --- Model B Aesthetics ---
+    cmap_B='viridis',
+    edgecolor_B='none',
+    label_B='Model B (Untrained)',
+    # --- Boundary Curve Aesthetics ---
+    bound_color='#2F4F4F',
+    bound_linewidth=2.5,
+    label_bound='Boundary Curve',
+    # --- Bounding Sphere Aesthetics ---
+    sphere_color='lightgray',
+    sphere_alpha=0.1,
+    label_sphere='Bounding Sphere',
+    # --- Axis Limits ---
+    ax1_zmin=0,
+    ax2_xlim=(-1.1, 1.1),
+    ax2_ylim=(-1.1, 1.1),
+    ax2_zlim=(-1.1, 1.1)
 ):
     def get_eval(xy_array, model):
         # Dynamically map the input tensor to the model's device
@@ -668,46 +705,51 @@ def plot_H3_surfaces(
     u_B, v_B, w_B = to_poincare(x_B, y_B, z_B)
 
     # ----- Subplots -----
-    fig = plt.figure(figsize=(8, 14))
+    fig = plt.figure(figsize=figsize)
 
     # --- Create Proxy Artists for Legends ---
-    # Sampling a color from the middle of the colormaps to represent the surfaces
-    patch_A = mpatches.Patch(color=plt.cm.coolwarm(0.8), label='Model A (Trained)', alpha=alpha_A)
-    patch_B = mpatches.Patch(color=plt.cm.viridis(0.5), label='Model B (Untrained)', alpha=alpha_B)
-    line_bound = Line2D([0], [0], color='#2F4F4F', linewidth=2.5, label='Boundary Curve')
+    patch_A = mpatches.Patch(color=plt.cm.get_cmap(cmap_A)(0.8), label=label_A, alpha=alpha_A)
+    patch_B = mpatches.Patch(color=plt.cm.get_cmap(cmap_B)(0.5), label=label_B, alpha=alpha_B)
+    line_bound = Line2D([0], [0], color=bound_color, linewidth=bound_linewidth, label=label_bound)
     
-    # Base handles to use in both plots
     base_handles = [patch_A, patch_B, line_bound]
+
+    # --- Helper function to apply common axis styling ---
+    def apply_axis_styling(ax, title):
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.set_zlabel(zlabel)
+        ax.grid(show_grid)
+        if not show_axis:
+            ax.set_axis_off()
+        ax.view_init(elev=elev, azim=azim)
 
     # --- 1. Half-Space Model ---
     ax1 = fig.add_subplot(2, 1, 1, projection="3d")
-    ax1.set_title("Half-Space Model (x, y, z)")
+    apply_axis_styling(ax1, title_ax1)
     
     # Model A Surface
-    ax1.plot_surface(x_A, y_A, z_A, cmap='coolwarm', edgecolor='none', alpha=alpha_A)
+    ax1.plot_surface(x_A, y_A, z_A, cmap=cmap_A, edgecolor=edgecolor_A, alpha=alpha_A)
     # Model B Surface
-    ax1.plot_surface(x_B, y_B, z_B, cmap='viridis', edgecolor='none', alpha=alpha_B)
+    ax1.plot_surface(x_B, y_B, z_B, cmap=cmap_B, edgecolor=edgecolor_B, alpha=alpha_B)
     
-    # Boundary Curve (Depth-sorted naturally at the r=1 boundary)
-    ax1.plot(x_A[:, -1], y_A[:, -1], z_A[:, -1], color='#2F4F4F', linewidth=2.5)
+    # Boundary Curve
+    ax1.plot(x_A[:, -1], y_A[:, -1], z_A[:, -1], color=bound_color, linewidth=bound_linewidth)
     
     # Calculate physical dimensions to enforce an equal aspect ratio dynamically
     dx = max(np.ptp(x_A), np.ptp(x_B))
     dy = max(np.ptp(y_A), np.ptp(y_B))
     dz = max(np.ptp(z_A), np.ptp(z_B))
-    
-    # Safeguard against 0-height at initialization
     ax1.set_box_aspect((max(dx, 1e-5), max(dy, 1e-5), max(dz, 1e-5))) 
+    ax1.set_zlim(bottom=ax1_zmin)
     
-    ax1.set_zlim(bottom=0)
-    ax1.view_init(elev=20, azim=-45)
-    
-    # Add Legend to Half-Space plot
-    ax1.legend(handles=base_handles, loc='upper right')
+    if show_legend:
+        ax1.legend(handles=base_handles, loc=legend_loc)
 
     # --- 2. Poincaré Ball Model ---
     ax2 = fig.add_subplot(2, 1, 2, projection="3d")
-    ax2.set_title("Poincaré Ball Model (u, v, w)")
+    apply_axis_styling(ax2, title_ax2)
 
     # Plot faint bounding sphere (S^2 boundary)
     u_sph = np.linspace(0, 2 * np.pi, 100)
@@ -715,25 +757,24 @@ def plot_H3_surfaces(
     xs = np.outer(np.cos(u_sph), np.sin(v_sph))
     ys = np.outer(np.sin(u_sph), np.sin(v_sph))
     zs = np.outer(np.ones(np.size(u_sph)), np.cos(v_sph))
-    ax2.plot_surface(xs, ys, zs, color='lightgray', alpha=0.1, edgecolor='none')
+    ax2.plot_surface(xs, ys, zs, color=sphere_color, alpha=sphere_alpha, edgecolor='none')
 
     # Model A Surface
-    ax2.plot_surface(u_A, v_A, w_A, cmap='coolwarm', edgecolor='none', alpha=alpha_A)
+    ax2.plot_surface(u_A, v_A, w_A, cmap=cmap_A, edgecolor=edgecolor_A, alpha=alpha_A)
     # Model B Surface
-    ax2.plot_surface(u_B, v_B, w_B, cmap='viridis', edgecolor='none', alpha=alpha_B)
+    ax2.plot_surface(u_B, v_B, w_B, cmap=cmap_B, edgecolor=edgecolor_B, alpha=alpha_B)
 
     # Boundary Curve mapped to S^2
-    ax2.plot(u_A[:, -1], v_A[:, -1], w_A[:, -1], color='#2F4F4F', linewidth=2.5)
+    ax2.plot(u_A[:, -1], v_A[:, -1], w_A[:, -1], color=bound_color, linewidth=bound_linewidth)
 
     ax2.set_box_aspect((1, 1, 1))
-    ax2.set_xlim((-1.1, 1.1))
-    ax2.set_ylim((-1.1, 1.1))
-    ax2.set_zlim((-1.1, 1.1))
-    ax2.view_init(elev=20, azim=-45)
+    ax2.set_xlim(ax2_xlim)
+    ax2.set_ylim(ax2_ylim)
+    ax2.set_zlim(ax2_zlim)
 
-    # Add specific bounding sphere patch for the Poincaré plot legend
-    patch_sphere = mpatches.Patch(color='lightgray', label='Bounding Sphere', alpha=0.3)
-    ax2.legend(handles=base_handles + [patch_sphere], loc='upper right')
+    if show_legend:
+        patch_sphere = mpatches.Patch(color=sphere_color, label=label_sphere, alpha=0.3)
+        ax2.legend(handles=base_handles + [patch_sphere], loc=legend_loc)
 
     plt.tight_layout()
     plt.show()
