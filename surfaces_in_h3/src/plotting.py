@@ -603,14 +603,14 @@ def plot_H3_surfaces(
     max_r_A=1,
     min_theta_A=0,
     max_theta_A=2*np.pi,
-    alpha_A=1,
+    alpha_A=1, # Surface A transparency
     # --- Grid B Parameters ---
     grid_size_B=500,
     min_r_B=0,
     max_r_B=1,
     min_theta_B=0,
     max_theta_B=2*np.pi,
-    alpha_B=1,
+    alpha_B=1, # Surface B transparency
     # --- Figure & Layout Parameters ---
     figsize=(8, 14),
     show_grid=True,
@@ -636,6 +636,7 @@ def plot_H3_surfaces(
     # --- Boundary Curve Aesthetics ---
     bound_color='#2F4F4F',
     bound_linewidth=2.5,
+    bound_alpha=1.0,         # <--- NEW: Boundary curve transparency
     label_bound='Boundary Curve',
     # --- Bounding Sphere Aesthetics ---
     sphere_color='lightgray',
@@ -678,8 +679,6 @@ def plot_H3_surfaces(
     pointsB = np.column_stack([XB.ravel(), YB.ravel()])
 
     # Evaluate both models
-    # Output indices from HyperbolicMinimalSurfacePINN: 
-    # 0 -> X (vertical height / z), 1 -> Y_1 (x), 2 -> Y_2 (y)
     outA = get_eval(pointsA, model_A_trained)
     outB = get_eval(pointsB, model_B_untrained)
 
@@ -710,7 +709,8 @@ def plot_H3_surfaces(
     # --- Create Proxy Artists for Legends ---
     patch_A = mpatches.Patch(color=plt.cm.get_cmap(cmap_A)(0.8), label=label_A, alpha=alpha_A)
     patch_B = mpatches.Patch(color=plt.cm.get_cmap(cmap_B)(0.5), label=label_B, alpha=alpha_B)
-    line_bound = Line2D([0], [0], color=bound_color, linewidth=bound_linewidth, label=label_bound)
+    # <--- ADDED: bound_alpha to the legend Line2D object
+    line_bound = Line2D([0], [0], color=bound_color, linewidth=bound_linewidth, alpha=bound_alpha, label=label_bound) 
     
     base_handles = [patch_A, patch_B, line_bound]
 
@@ -735,7 +735,8 @@ def plot_H3_surfaces(
     ax1.plot_surface(x_B, y_B, z_B, cmap=cmap_B, edgecolor=edgecolor_B, alpha=alpha_B)
     
     # Boundary Curve
-    ax1.plot(x_A[:, -1], y_A[:, -1], z_A[:, -1], color=bound_color, linewidth=bound_linewidth)
+    # <--- ADDED: alpha=bound_alpha
+    ax1.plot(x_A[:, -1], y_A[:, -1], z_A[:, -1], color=bound_color, linewidth=bound_linewidth, alpha=bound_alpha)
     
     # Calculate physical dimensions to enforce an equal aspect ratio dynamically
     dx = max(np.ptp(x_A), np.ptp(x_B))
@@ -765,7 +766,8 @@ def plot_H3_surfaces(
     ax2.plot_surface(u_B, v_B, w_B, cmap=cmap_B, edgecolor=edgecolor_B, alpha=alpha_B)
 
     # Boundary Curve mapped to S^2
-    ax2.plot(u_A[:, -1], v_A[:, -1], w_A[:, -1], color=bound_color, linewidth=bound_linewidth)
+    # <--- ADDED: alpha=bound_alpha
+    ax2.plot(u_A[:, -1], v_A[:, -1], w_A[:, -1], color=bound_color, linewidth=bound_linewidth, alpha=bound_alpha)
 
     ax2.set_box_aspect((1, 1, 1))
     ax2.set_xlim(ax2_xlim)
