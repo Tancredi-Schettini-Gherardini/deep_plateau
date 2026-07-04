@@ -56,7 +56,7 @@ def generate_knot_perturbation_matrix(
         dtype=torch.float64,
         device='cpu'
 ):
-    if not seed:
+    if seed is not None:
         torch.manual_seed(seed)
     return torch.randn(6, N, device=device, dtype=dtype) * scale
 

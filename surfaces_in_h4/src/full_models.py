@@ -17,18 +17,25 @@ class HyperbolicMinimalSurfacePINN(nn.Module):
             knot_kwargs,
             knot_perturbation_matrix = None,
             interior_model_type = 'mlp',
+            interior_model_kwargs = None,
+            bdf_type = 'stereographic',
+            ext_type = 'stereobiharmonic',
+            ext_kwargs = None,
+            decay_exponent = 2,
+            dtype = torch.float64):
+        super().__init__()
+
+        # Build fresh mutable defaults inside the body (avoids the shared
+        # mutable-default-argument pitfall).
+        if interior_model_kwargs is None:
             interior_model_kwargs = {
                 'in_dim': 2,
                 'out_dim': 4,
                 'hidden_dim': 64,
                 'num_hidden_layers': 4
-            },
-            bdf_type = 'stereographic',
-            ext_type = 'stereobiharmonic',
-            ext_kwargs = {'N': 15, 'num_samples': 10000},
-            decay_exponent = 2,
-            dtype = torch.float64):
-        super().__init__()
+            }
+        if ext_kwargs is None:
+            ext_kwargs = {'N': 15, 'num_samples': 10000}
 
         self.kwargs = {
             'knot_type': knot_type,

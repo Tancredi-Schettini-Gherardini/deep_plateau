@@ -18,17 +18,25 @@ class HyperbolicMinimalSurfacePINN(nn.Module):
             curve_kwargs,
             curve_perturbation_matrix = None,
             interior_model_type = 'mlp',
+            interior_model_kwargs = None,
+            bdf_type = 'stereographic',
+            ext_type = 'stereobiharmonic',
+            ext_kwargs = None,
+            decay_exponent = 2,
+            dtype = torch.float64):
+        super().__init__()
+
+        # Build fresh mutable defaults inside the body (avoids the shared
+        # mutable-default-argument pitfall). out_dim is injected dynamically
+        # below, once the curve's codomain dimension is known.
+        if interior_model_kwargs is None:
             interior_model_kwargs = {
                 'in_dim': 2,
                 'hidden_dim': 64,
                 'num_hidden_layers': 4
-            },
-            bdf_type = 'stereographic',
-            ext_type = 'stereobiharmonic',
-            ext_kwargs = {'N': 15, 'num_samples': 10000},
-            decay_exponent = 2,
-            dtype = torch.float64):
-        super().__init__()
+            }
+        if ext_kwargs is None:
+            ext_kwargs = {'N': 15, 'num_samples': 10000}
 
         self.kwargs = {
             'curve_type': curve_type,
