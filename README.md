@@ -91,15 +91,6 @@ reproduces the paper's results section by section: for each shipped checkpoint i
 points, and compares the signed self-intersection count against the HOMFLY prediction of Fine's
 conjecture.
 
-_A figure-by-figure index is coming soon. Example:_
-
-| Figure | Notebook | Cell ID | Checkpoint |
-|--------|----------|---------|------------|
-| $6_1$ self-proximity map | `surfaces_in_h4/companion_to_paper.ipynb` | `s4-3-6-1-code` | `trained_models/paper/KNOT_stevedore_KNOT_PAR_R1.6_mirrorFalse_PERTURBED.pt` |
-
-The random seeds used to generate the perturbation matrices for each shipped checkpoint
-will be documented here soon (work in progress).
-
 ## The mathematics, in brief
 
 Working in the upper half-space model
